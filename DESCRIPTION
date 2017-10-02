@@ -1,0 +1,13 @@
+Package: lab6
+Type: Package
+Title: What the package does (short line)
+Version: 1.0
+Date: 2017-10-02
+Authors@R: c(
+    person("De Biase", "Alessia", email = "alessia_debiase@libero.it", role = c("aut")),
+    person("Barakat", "Bruno", email = "barakatbruno@gmail.com", role = c("cre","aut")))
+Author: Barakat Bruno [aut, cre],
+  De Biase Alessia [aut]
+Maintainer: Alessia De Biase <alessia_debiase@libero.it>
+Description: More about what it does (maybe more than one line)
+License: GPL
