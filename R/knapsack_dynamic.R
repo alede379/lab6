@@ -1,16 +1,12 @@
-
+###RUN to create the object:
 #set.seed(42)
 #n <- 2000
 #knapsack_objects <-data.frame(w=sample(1:4000, size = n, replace = TRUE),v=runif(n = n, 0, 10000))
 #knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500)
 
-### ---> TIME OF ESECUTION
-#install.packages("tictoc")
-#require(tictoc)
-#tic()
-#knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500)
-#exectime <- toc()
-#exectime <- exectime$toc - exectime$tic
+###RUN to check the time:
+#system.time(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500))
+#lineprof(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500))
 
 knapsack_dynamic<-function(x,W){
   
@@ -19,20 +15,17 @@ knapsack_dynamic<-function(x,W){
     
     n<-dim(x)[1]
     m<-matrix(ncol=W+1,nrow=n+1) #matrix of alg.
-   
-    
-    for(j in 0:(W)){
-      m[1,j+1]<-0
-    }
+    m[1,]<-rep(0,W+1)
+    val<-x$v
+    wei<-x$w
     
     #building m[i,j] and looking for the greatest sum lower than W
-    
     for(i in 1:n){    
       for(j in 0:W){
-        if(x$w[i] > j){
+        if(wei[i] > j){
           m[i+1,j+1]<-m[i,j+1]
         }else{
-          m[i+1,j+1]<-max(m[i,j+1],m[i,j+1-x$w[i]]+x$v[i])
+          m[i+1,j+1]<-max(m[i,j+1],m[i,j+1-wei[i]]+val[i])
         }
       }
     }
@@ -40,17 +33,15 @@ knapsack_dynamic<-function(x,W){
   #looking for the elements from the sum
     
   j=j+1  
-  i<-which.max(m[,j])
-  i<-i-1
+  i<-which.max(m[,j]) #row selected is the one of the first element selected
   elements<-length(n)
   k<-1
-  elements[k]<-i
+  elements[k]<-i-1
   
   while(m[i,j]!=0 && j!=1 && i!=0){
     k<-k+1
-    j<-(j-x$w[i])
-    opt<-m[i,j]
-    i<-which(m[,j]==opt)[1]
+    j<-(j-wei[i-1])
+    i<-which(m[,j] == m[i-1,j])[1]
     elements[k]<-i-1
   }
   

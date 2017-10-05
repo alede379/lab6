@@ -11,3 +11,4 @@ Author: Barakat Bruno [aut, cre],
 Maintainer: Alessia De Biase <alessia_debiase@libero.it>
 Description: More about what it does (maybe more than one line)
 License: GPL
+Suggests: testthat
