@@ -25,10 +25,3 @@ Maintainer: \packageMaintainer{lab6}
 }
 
 \keyword{ package }
-\seealso{
-
-\code{\link[<pkg>:<pkg>-package]{<pkg>}}
-}
-\examples{
-
-}

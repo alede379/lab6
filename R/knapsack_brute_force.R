@@ -22,12 +22,11 @@ brute_force_knapsack<-function(x,W,parallel=FALSE){
   
   if(parallel==TRUE){
     
-    require(parallel)
     cores <- parallel::detectCores()
     
-    cl <- makeCluster(cores, type = "PSOCK")
+    cl <- parallel::makeCluster(cores, type = "PSOCK")
     
-    comb_p <- parLapply(cl,maxvalue,value,n,elements,function(elements,maxvalue){
+    comb_p <- parallel::parLapply(cl,maxvalue,value,n,elements,function(elements,maxvalue){
                           for(i in 1:n)
                           {
                             comb<-combn(n,i) #all possible combination of i from 1 to n
@@ -53,7 +52,7 @@ brute_force_knapsack<-function(x,W,parallel=FALSE){
     value<-round(comb_p[2])
     values<-list(value=value,elements=comb_p[1])
     
-    stopCluster(cl)
+    parallel::stopCluster(cl)
 
     }else{
 

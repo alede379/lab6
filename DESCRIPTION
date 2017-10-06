@@ -12,3 +12,6 @@ Maintainer: Alessia De Biase <alessia_debiase@libero.it>
 Description: More about what it does (maybe more than one line)
 License: GPL
 Suggests: testthat
+Imports: parallel,
+	 utils
+RoxygenNote: 6.0.1
