@@ -7,7 +7,7 @@
 ###RUN to check the time:
 #system.time(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500))
 #lineprof(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500))
-
+#'@export knapsack_dynamic
 knapsack_dynamic<-function(x,W){
   
   #check if the input are correct
