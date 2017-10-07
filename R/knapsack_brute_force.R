@@ -106,4 +106,3 @@ brute_force_knapsack<-function(x,W,parallel=FALSE){
 
 #brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500,parallel=FALSE)
 #brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500,parallel=TRUE)
-

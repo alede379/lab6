@@ -2,6 +2,7 @@
 #system.time(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500))
 #lineprof(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500))
 
+
 #'
 #' Dynamic programming in in knapsack problem
 #' 
@@ -16,6 +17,7 @@
 #' knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500)
 #' @references \url{ https://en.wikipedia.org/wiki/Knapsack_problem#0.2F1_knapsack_problem }
 #'@export knapsack_dynamic
+
 
 knapsack_dynamic<-function(x,W){
   
