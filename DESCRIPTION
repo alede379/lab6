@@ -12,7 +12,10 @@ Maintainer: Alessia De Biase <alessia_debiase@libero.it>
 Description: The knapsack problem is a discrete optimization problem, in the package there are three different algorithms to approach it: Brute force search, Dynamic programming, Greedy heuristic.
 Depends: R(>= 2.10)
 License: GPL
-Suggests: testthat
+Suggests: testthat,
+	  knitr,
+    rmarkdown
 Imports: parallel,
 	 utils
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr

@@ -16,6 +16,7 @@
 #' knapsack_objects <-data.frame(w=sample(1:4000, size = n, replace = TRUE),v=runif(n = n, 0, 10000))
 #' brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500)
 #'@export brute_force_knapsack
+#'@importFrom utils combn
 
 brute_force_knapsack<-function(x,W,parallel=FALSE){
   
@@ -51,10 +52,11 @@ brute_force_knapsack<-function(x,W,parallel=FALSE){
     cl <- parallel::makeCluster(cores, type = "PSOCK")
     
     parallel::clusterExport(cl, varlist=c("x","W","n","elements","maxvalue","value"), envir=environment())
+    parallel::clusterEvalQ(cl, library(utils))
     
     values<-parallel::parLapply(cl, 1:n, function(i, x,W) {
       
-      comb<-combn(n,i) #all possible combination of i from 1 to n
+      comb<-utils::combn(n,i) #all possible combination of i from 1 to n
       j<-1
       
       while(j<=ncol(comb)){ 

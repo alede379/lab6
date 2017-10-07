@@ -1,7 +1,8 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
-date: "`r Sys.Date()`"
+title: The knapsack package
+author: Alessia De Biase and Bruno Barakat
+#date: "`r Sys.Date()`"
+package: lab6
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -9,50 +10,95 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+The `lab6` package provides the main function to compute a linear regression when a set of data and the variables to investigate are given. 
+Compared to the classic linear regression function (`lm()`) `linreg()` helps to calculate all the most significative elements of a linear regression in just one step just giving the observations (contained in a dataset) and the formula. `lab4ab` also provides a plotting function and a summary function just as `lm()` does.
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+## Linear regression function: `linreg()`
 
-## Vignette Info
+`linreg$new(data, formula)` needs two arguments:
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+- *formula* : the linear regression formula the user wants to compute, where on the left is the dependent variable and on the right all the indipendent variables (for example: `Petal.Length ~ Sepal.Width + Sepal.Length`)
+- *data* : a dataframe containing all the features (one for each column);
 
-## Styles
+Applying the function to those objects the dependent variable is stored in a vector *Y* and the independent variables in a matrix *X*. At the same time all the following statistics are calculated:
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+1. **Regression coefficients** (`beta_hat`) : $\hat{\beta}= (X^TX)^{-1}X^Ty$
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+2. **The fitted values** (`fitted`) : $\hat{y}= X\hat{\beta}$
 
-## Figures
+3. **The residuals** (`res`) : $\hat{e}= y-X\hat{\beta}$
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
+4. **The degree of freedom** (`df`) : $df=n-p$ , where $n$ is the number of observations and $p$ is the number of parameters in the model
 
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+5. **The residual variance** (`res_var`) : $\hat{\sigma}^2=\frac{e^Te}{df}$
+
+6. **The variance of the regression coefficients** (`reg_var`) : $\hat{Var}(\hat{\beta})=\hat{\sigma}^2(X^TX)^{-1}) $
+
+7. **The t-values for each coefficient** (`t_value`) :$t_\beta=\frac{\hat{\beta}}{\sqrt{Var(\hat{\beta})}}$
+
+8. **The p-values for each coefficient** (`p_value`) : $P(|>t|)$ the probability of each coefficient to be equal to 0
+
+*linreg* is a class, all the calculations have been stored in it, so to access to one of the previews statistics it may be used *$* as it follows:
+
+```{r}
+
+
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+The package provides also three other methods which return some of the statistics showed before: 
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+- `$resid()`: which returns the vector of residuals (point 3.)
+- `$pred()` : which returns the predicted values (point 2.)
+- `$coef()` : which returns the regression coefficients with their names (point 1.)
 
-## More Examples
 
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+## The printing method:  `print()`
 
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+The `$print()` shows exactly the same data of `lm()` function: it provides the coefficients found in the linear regression and their names. 
+
+```{r}
+
+
 ```
 
-Also a quote using `>`:
+## Plotting
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+In `lab4ab` package there is also a method which contains two graphs: one representing the residuals vs the fitted values, the second one a scaled version of the first one, the residuals have been standardized by the formula: $$\sqrt{ \frac{|mean(res)-res|}{\sqrt{{Var(res)}}}}$$ .
+The line represents the trend of the observations in the graphs. The smooth has been realized with a local polynomial regression fitting with a span (parameter which controls the degree of smoothing) of 1.5. It looks very close to the one obtained by `plot(lm())`. The methid `$plot()` plots, using *ggplot2*  package that has to be installed before using `lab4ab`. The graphs respect some of the graphical criteria of Linkoping University.
+
+```{r message=FALSE, fig.align="center",fig.height = 5, fig.width = 9}
+
+
+```
+
+## `$summary()`
+
+Last method in the package is `summary()`. It's aim is to return a similar printout as printed for `lm()`. The statistics of this output are: 
+
+```{r message=FALSE}
+
+
+
+```
+
+## Examples
+
+```{r}
+
+
+```
+
+```{r, echo=FALSE}
+
+```
+```{r}
+
+
+
+```
+```{r}
+
+
+
+```
