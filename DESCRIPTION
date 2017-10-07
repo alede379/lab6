@@ -1,6 +1,6 @@
 Package: lab6
 Type: Package
-Title: What the package does (short line)
+Title: Knapsack problem algorithms
 Version: 1.0
 Date: 2017-10-02
 Authors@R: c(
@@ -9,12 +9,10 @@ Authors@R: c(
 Author: Barakat Bruno [aut, cre],
   De Biase Alessia [aut]
 Maintainer: Alessia De Biase <alessia_debiase@libero.it>
-Description: More about what it does (maybe more than one line)
+Description: The knapsack problem is a discrete optimization problem, in the package there are three different algorithms to approach it: Brute force search, Dynamic programming, Greedy heuristic.
+Depends: R(>= 2.10)
 License: GPL
-Suggests: testthat,
-    knitr,
-    rmarkdown
+Suggests: testthat
 Imports: parallel,
 	 utils
 RoxygenNote: 6.0.1
-VignetteBuilder: knitr

@@ -1,18 +1,40 @@
-###RUN to create the object:
-#set.seed(42)
-#n <- 2000
-#knapsack_objects <-data.frame(w=sample(1:4000, size = n, replace = TRUE),v=runif(n = n, 0, 10000))
-#knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500)
-
 ###RUN to check the time:
 #system.time(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500))
 #lineprof(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500))
 
+#'
+#' Dynamic programming in in knapsack problem
+#' 
+#' 
+#' @param x A dataframe with two columns: the values (v) and the weights (w) of each item to put in the knapsack.
+#' @param W A positive number representing the knapsack size.
+#' @return A list of two elements: a positive number with the maximum knapsack \code{value} and a vector of all the \code{elements} in the knapsack size.
+#' @examples
+#' set.seed(42)
+#' n <- 2000
+#' knapsack_objects <-data.frame(w=sample(1:4000, size = n, replace = TRUE),v=runif(n = n, 0, 10000))
+#' knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500)
+#' @references \url{ https://en.wikipedia.org/wiki/Knapsack_problem#0.2F1_knapsack_problem }
+#'@export knapsack_dynamic
+
 knapsack_dynamic<-function(x,W){
   
-  #check if the input are correct
-  stopifnot((is.data.frame(x)==TRUE) && x>0 && x$w>0 && is.numeric(x$w)==TRUE && is.numeric(x$v)==TRUE && is.numeric(W)==TRUE && length(x)==2 && names(x)==c("w","v") &&  W>0) 
-    
+    if(!is.data.frame(x)){
+      stop("x must be a dataframe")
+    }
+    if(any(x<=0)){
+      stop("x must contain positive values")
+    }
+    if(!(length(x)==2)){
+      stop("x must have two columns")
+    }
+    if(!(all(names(x)==c("w","v")))){
+      stop("x columns' names must be 'v' and 'w'")
+    }
+    if(!(W>=0 && length(W)==1 && is.numeric(W))){
+      stop("W must be one positive numeric value")
+    }
+  
     n<-dim(x)[1]
     m<-matrix(ncol=W+1,nrow=n+1) #matrix of alg.
     m[1,]<-rep(0,W+1)
