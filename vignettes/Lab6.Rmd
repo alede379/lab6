@@ -75,7 +75,7 @@ The complexity of this problem is $O(nlogn)$.
 To run the algorithm for $n=1000000$ objects it takes:
 
 ```{r}
-#system.time(greedy_knapsack(x = knapsack_objects[1:1000000,], W = 3500))
+system.time(greedy_knapsack(x = knapsack_objects[1:1000000,], W = 3500))
 ```
 
 Improving the code with function as `lapply()` or parallelizing helps to get faster results and a better time of computation. The time slows down when big structure are called too many times, as big dataframes, to speed up the code it's always better to evitate saving too many unused data. 
