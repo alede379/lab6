@@ -22,7 +22,7 @@ greedy_knapsack<- function(x,W){
     if(!is.data.frame(x)){
       stop("x must be a dataframe")
     }
-    if(any(x<=0)){
+    if(any(x[,c("w","v")] < 0)){
       stop("x must contain positive values")
     }
     if(!(length(x)==2)){
@@ -43,7 +43,7 @@ greedy_knapsack<- function(x,W){
   k<-1
   
   #we find the max value of the weights, we take the position so calculate the sum and to save the elements we are adding
-  while((sum(x$w[elements])+x$w[which.max(x$weight)])<=W && x$weight>0){
+  while((sum(x$w[elements])+x$w[which.max(x$weight)])<=W && any(x$weight>0)){
     i<-which.max(x$weight)
     value<-value+x$v[i] 
     elements[k]<-i

@@ -12,11 +12,50 @@
 
 <meta name="author" content="Alessia De Biase and Bruno Barakat" />
 
+<meta name="date" content="2017-10-08" />
 
 <title>The knapsack package</title>
 
 
 
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
 
 
 
@@ -31,50 +70,89 @@
 
 <h1 class="title toc-ignore">The knapsack package</h1>
 <h4 class="author"><em>Alessia De Biase and Bruno Barakat</em></h4>
+<h4 class="date"><em>2017-10-08</em></h4>
 
 
 
-<p>The <code>lab6</code> package provides the main function to compute a linear regression when a set of data and the variables to investigate are given. Compared to the classic linear regression function (<code>lm()</code>) <code>linreg()</code> helps to calculate all the most significative elements of a linear regression in just one step just giving the observations (contained in a dataset) and the formula. <code>lab4ab</code> also provides a plotting function and a summary function just as <code>lm()</code> does.</p>
-<div id="linear-regression-function-linreg" class="section level2">
-<h2>Linear regression function: <code>linreg()</code></h2>
-<p><code>linreg$new(data, formula)</code> needs two arguments:</p>
+<p>The <code>lab6</code> package provides three different way to approach the knapsack problem, a discrete optimization problem where the goal is to find the knapsack with the largest value of elements added to it from a list of given items. Each item has a value (<span class="math inline">\(v\)</span>) and a weight (<span class="math inline">\(w\)</span>), the knapsack has a limited given weight <span class="math inline">\(W\)</span>.</p>
+<p>The three approaches used to solve problem in the package are:</p>
+<p></p>
+<p>All three functions needs two arguments:</p>
 <ul>
-<li><em>formula</em> : the linear regression formula the user wants to compute, where on the left is the dependent variable and on the right all the indipendent variables (for example: <code>Petal.Length ~ Sepal.Width + Sepal.Length</code>)</li>
-<li><em>data</em> : a dataframe containing all the features (one for each column);</li>
+<li><p><code>x</code> : a dataframe with all informations about the items available. Each row of the dataframe represents one elements, the column <code>v</code> contains its value while the column <code>w</code>contains its weight.</p></li>
+<li><p><code>W</code> : is a positive value representing the maximum weight capacity of the knapsack.</p></li>
 </ul>
-<p>Applying the function to those objects the dependent variable is stored in a vector <em>Y</em> and the independent variables in a matrix <em>X</em>. At the same time all the following statistics are calculated:</p>
-<ol style="list-style-type: decimal">
-<li><p><strong>Regression coefficients</strong> (<code>beta_hat</code>) : <span class="math inline">\(\hat{\beta}= (X^TX)^{-1}X^Ty\)</span></p></li>
-<li><p><strong>The fitted values</strong> (<code>fitted</code>) : <span class="math inline">\(\hat{y}= X\hat{\beta}\)</span></p></li>
-<li><p><strong>The residuals</strong> (<code>res</code>) : <span class="math inline">\(\hat{e}= y-X\hat{\beta}\)</span></p></li>
-<li><p><strong>The degree of freedom</strong> (<code>df</code>) : <span class="math inline">\(df=n-p\)</span> , where <span class="math inline">\(n\)</span> is the number of observations and <span class="math inline">\(p\)</span> is the number of parameters in the model</p></li>
-<li><p><strong>The residual variance</strong> (<code>res_var</code>) : <span class="math inline">\(\hat{\sigma}^2=\frac{e^Te}{df}\)</span></p></li>
-<li><p><strong>The variance of the regression coefficients</strong> (<code>reg_var</code>) : $()=<sup>2(X</sup>TX)^{-1}) $</p></li>
-<li><p><strong>The t-values for each coefficient</strong> (<code>t_value</code>) :<span class="math inline">\(t_\beta=\frac{\hat{\beta}}{\sqrt{Var(\hat{\beta})}}\)</span></p></li>
-<li><p><strong>The p-values for each coefficient</strong> (<code>p_value</code>) : <span class="math inline">\(P(|&gt;t|)\)</span> the probability of each coefficient to be equal to 0</p></li>
-</ol>
-<p><em>linreg</em> is a class, all the calculations have been stored in it, so to access to one of the previews statistics it may be used <em>$</em> as it follows:</p>
-<p>The package provides also three other methods which return some of the statistics showed before:</p>
-<ul>
-<li><code>$resid()</code>: which returns the vector of residuals (point 3.)</li>
-<li><code>$pred()</code> : which returns the predicted values (point 2.)</li>
-<li><code>$coef()</code> : which returns the regression coefficients with their names (point 1.)</li>
-</ul>
+<p>The <code>brute_force_knapsack</code> is the only function with an optional parameter called <code>parallel</code>. It’s FALSE by default but if it is set to TRUE then the function should parallelize over the detected cores.</p>
+<div id="brute-force-search-brute_force_knapsackxw" class="section level2">
+<h2>Brute force search: <code>brute_force_knapsack(x,W)</code></h2>
+<p>The <code>brute_force_knapsack</code>function goes through all the possible alternatives and return the maximum value found. It gives a correct answer to the problem in all the situation but its complexity is <span class="math inline">\(O(2^n)\)</span> because all possible <span class="math inline">\(2^n\)</span> combinations need to be evaluated.</p>
+<p>To run the algorithm for <span class="math inline">\(n=16\)</span> objects it takes:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">42</span>)
+n &lt;-<span class="st"> </span><span class="dv">2000</span>
+knapsack_objects &lt;-<span class="kw">data.frame</span>(<span class="dt">w=</span><span class="kw">sample</span>(<span class="dv">1</span>:<span class="dv">4000</span>, <span class="dt">size =</span> n, <span class="dt">replace =</span> <span class="ot">TRUE</span>),<span class="dt">v=</span><span class="kw">runif</span>(<span class="dt">n =</span> n, <span class="dv">0</span>, <span class="dv">10000</span>))
+<span class="kw">system.time</span>(<span class="kw">brute_force_knapsack</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">16</span>,], <span class="dt">W =</span> <span class="dv">3500</span>))</code></pre></div>
+<pre><code>##    user  system elapsed 
+##    0.55    0.00    0.54</code></pre>
+<p>If <code>parallel=TRUE</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">brute_force_knapsack</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">16</span>,], <span class="dt">W =</span> <span class="dv">3500</span>,<span class="dt">parallel =</span> <span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>##    user  system elapsed 
+##    0.05    0.03    1.16</code></pre>
+<p>the user time it’s better compared to the non-parallelized one but the elapsed time increases.</p>
 </div>
-<div id="the-printing-method-print" class="section level2">
-<h2>The printing method: <code>print()</code></h2>
-<p>The <code>$print()</code> shows exactly the same data of <code>lm()</code> function: it provides the coefficients found in the linear regression and their names.</p>
+<div id="dynamic-programming-knapsack_dynamicxw" class="section level2">
+<h2>Dynamic programming: <code>knapsack_dynamic(x,W)</code></h2>
+<p>The <code>knapsack_dynamic</code> is based on the fact that all weights are nonnegative integers and they are all less than <span class="math inline">\(W\)</span>. In this approach it’s defined a matrix where in each position <code>m[i,w]</code> is stored the maximum value that can be attained with weight less than or equal to <code>w</code> using items up to <code>i</code>. The maximum value is found calculating <code>m[n,W]</code>. It gives a correct answer to the problem in all the situation but its complexity is <span class="math inline">\(O(Wn)\)</span> less than the <code>brute_force_knapsack</code>function.</p>
+<p>To run the algorithm for <span class="math inline">\(n=500\)</span> objects it takes:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_dynamic</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">500</span>,], <span class="dt">W =</span> <span class="dv">3500</span>))</code></pre></div>
+<pre><code>## Warning in .Internal(gc(verbose, reset)): closing unused connection 8 (&lt;-
+## DESKTOP-5B1MD92:11020)</code></pre>
+<pre><code>## Warning in .Internal(gc(verbose, reset)): closing unused connection 7 (&lt;-
+## DESKTOP-5B1MD92:11020)</code></pre>
+<pre><code>## Warning in .Internal(gc(verbose, reset)): closing unused connection 6 (&lt;-
+## DESKTOP-5B1MD92:11020)</code></pre>
+<pre><code>## Warning in .Internal(gc(verbose, reset)): closing unused connection 5 (&lt;-
+## DESKTOP-5B1MD92:11020)</code></pre>
+<pre><code>##    user  system elapsed 
+##    5.50    0.00    5.53</code></pre>
 </div>
-<div id="plotting" class="section level2">
-<h2>Plotting</h2>
-<p>In <code>lab4ab</code> package there is also a method which contains two graphs: one representing the residuals vs the fitted values, the second one a scaled version of the first one, the residuals have been standardized by the formula: <span class="math display">\[\sqrt{ \frac{|mean(res)-res|}{\sqrt{{Var(res)}}}}\]</span> . The line represents the trend of the observations in the graphs. The smooth has been realized with a local polynomial regression fitting with a span (parameter which controls the degree of smoothing) of 1.5. It looks very close to the one obtained by <code>plot(lm())</code>. The methid <code>$plot()</code> plots, using <em>ggplot2</em> package that has to be installed before using <code>lab4ab</code>. The graphs respect some of the graphical criteria of Linkoping University.</p>
-</div>
-<div id="summary" class="section level2">
-<h2><code>$summary()</code></h2>
-<p>Last method in the package is <code>summary()</code>. It’s aim is to return a similar printout as printed for <code>lm()</code>. The statistics of this output are:</p>
+<div id="greedy-heuristic-greedy_knapsackxw" class="section level2">
+<h2>Greedy Heuristic: <code>greedy_knapsack(x,W)</code></h2>
+<p>The <code>greedy_knapsack</code>function doesn’t give the exact result for the problem but it reduces the computational complexity for the problem. This approach sorts the items in decreasing order of value per unit of weight <span class="math inline">\(v_i/w_i\)</span> and it proceeds to insert them into the sack until there is not more space. The complexity of this problem is <span class="math inline">\(O(nlogn)\)</span>.</p>
+<p>To run the algorithm for <span class="math inline">\(n=1000000\)</span> objects it takes:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#system.time(greedy_knapsack(x = knapsack_objects[1:1000000,], W = 3500))</span></code></pre></div>
+<p>Improving the code with function as <code>lapply()</code> or parallelizing helps to get faster results and a better time of computation. The time slows down when big structure are called too many times, as big dataframes, to speed up the code it’s always better to evitate saving too many unused data.</p>
 </div>
 <div id="examples" class="section level2">
 <h2>Examples</h2>
+<p>Different functions don’t give always the same results:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">greedy_knapsack</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">8</span>,], <span class="dt">W =</span> <span class="dv">3500</span>)</code></pre></div>
+<pre><code>## $value
+## [1] 15428
+## 
+## $elements
+## [1] 8 3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">brute_force_knapsack</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">8</span>,], <span class="dt">W =</span> <span class="dv">3500</span>)</code></pre></div>
+<pre><code>## $value
+## [1] 16770
+## 
+## $elements
+## [1] 5 8</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">knapsack_dynamic</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">8</span>,], <span class="dt">W =</span> <span class="dv">3500</span>)</code></pre></div>
+<pre><code>## $value
+## [1] 16770
+## 
+## $elements
+## [1] 5 8</code></pre>
+<p>Compating the times of the three functions:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">greedy_knapsack</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">8</span>,], <span class="dt">W =</span> <span class="dv">3500</span>))</code></pre></div>
+<pre><code>##    user  system elapsed 
+##    0.02    0.00    0.02</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">brute_force_knapsack</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">8</span>,], <span class="dt">W =</span> <span class="dv">3500</span>))</code></pre></div>
+<pre><code>##    user  system elapsed 
+##       0       0       0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_dynamic</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">8</span>,], <span class="dt">W =</span> <span class="dv">3500</span>))</code></pre></div>
+<pre><code>##    user  system elapsed 
+##    0.01    0.00    0.01</code></pre>
 </div>
 
 

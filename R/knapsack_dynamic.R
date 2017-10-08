@@ -24,7 +24,7 @@ knapsack_dynamic<-function(x,W){
     if(!is.data.frame(x)){
       stop("x must be a dataframe")
     }
-    if(any(x<=0)){
+    if(any(x<0,na.rm=TRUE)){
       stop("x must contain positive values")
     }
     if(!(length(x)==2)){

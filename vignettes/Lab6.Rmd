@@ -1,7 +1,7 @@
 ---
 title: The knapsack package
 author: Alessia De Biase and Bruno Barakat
-#date: "`r Sys.Date()`"
+date: "`r Sys.Date()`"
 package: lab6
 output: rmarkdown::html_vignette
 vignette: >
@@ -10,95 +10,98 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The `lab6` package provides the main function to compute a linear regression when a set of data and the variables to investigate are given. 
-Compared to the classic linear regression function (`lm()`) `linreg()` helps to calculate all the most significative elements of a linear regression in just one step just giving the observations (contained in a dataset) and the formula. `lab4ab` also provides a plotting function and a summary function just as `lm()` does.
+The `lab6` package provides three different way to approach the knapsack problem, a discrete optimization problem where the goal is to find the knapsack with the largest value of elements added to it from a list of given items. Each item has a value ($v$) and a weight ($w$), the knapsack has a limited given weight $W$.
 
-## Linear regression function: `linreg()`
+The three approaches used to solve problem in the package are:
 
-`linreg$new(data, formula)` needs two arguments:
+\itemize{
+\item Brute force search: `brute_force_knapsack(x,W)`
+\item Dynamic programming: `knapsack_dynamic(x,W)`
+\item Greedy heuristic: `greedy_knapsack(x,W)`
+}
 
-- *formula* : the linear regression formula the user wants to compute, where on the left is the dependent variable and on the right all the indipendent variables (for example: `Petal.Length ~ Sepal.Width + Sepal.Length`)
-- *data* : a dataframe containing all the features (one for each column);
+All three functions needs two arguments:
 
-Applying the function to those objects the dependent variable is stored in a vector *Y* and the independent variables in a matrix *X*. At the same time all the following statistics are calculated:
+- `x` : a dataframe with all informations about the items available. Each row of the dataframe represents one elements, the column `v` contains its value while the column `w`contains its weight. 
 
-1. **Regression coefficients** (`beta_hat`) : $\hat{\beta}= (X^TX)^{-1}X^Ty$
+- `W` : is a positive value representing the maximum weight capacity of the knapsack.
 
-2. **The fitted values** (`fitted`) : $\hat{y}= X\hat{\beta}$
+The `brute_force_knapsack` is the only function with an optional parameter called `parallel`. It's FALSE by default but if it is set to TRUE then the function should parallelize over the detected cores.
 
-3. **The residuals** (`res`) : $\hat{e}= y-X\hat{\beta}$
 
-4. **The degree of freedom** (`df`) : $df=n-p$ , where $n$ is the number of observations and $p$ is the number of parameters in the model
+## Brute force search: `brute_force_knapsack(x,W)`
 
-5. **The residual variance** (`res_var`) : $\hat{\sigma}^2=\frac{e^Te}{df}$
+The `brute_force_knapsack`function goes through all the possible alternatives and return the maximum value found. It gives a correct answer to the problem in all the situation but its complexity is $O(2^n)$ because all possible $2^n$ combinations need to be evaluated. 
 
-6. **The variance of the regression coefficients** (`reg_var`) : $\hat{Var}(\hat{\beta})=\hat{\sigma}^2(X^TX)^{-1}) $
+To run the algorithm for $n=16$ objects it takes:
 
-7. **The t-values for each coefficient** (`t_value`) :$t_\beta=\frac{\hat{\beta}}{\sqrt{Var(\hat{\beta})}}$
-
-8. **The p-values for each coefficient** (`p_value`) : $P(|>t|)$ the probability of each coefficient to be equal to 0
-
-*linreg* is a class, all the calculations have been stored in it, so to access to one of the previews statistics it may be used *$* as it follows:
+```{r include=FALSE}
+library(devtools)
+install_github("alede379/lab6",force=TRUE)
+library(lab6)
+```
 
 ```{r}
-
-
+set.seed(42)
+n <- 2000
+knapsack_objects <-data.frame(w=sample(1:4000, size = n, replace = TRUE),v=runif(n = n, 0, 10000))
+system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500))
 ```
 
-
-The package provides also three other methods which return some of the statistics showed before: 
-
-- `$resid()`: which returns the vector of residuals (point 3.)
-- `$pred()` : which returns the predicted values (point 2.)
-- `$coef()` : which returns the regression coefficients with their names (point 1.)
-
-
-## The printing method:  `print()`
-
-The `$print()` shows exactly the same data of `lm()` function: it provides the coefficients found in the linear regression and their names. 
+If `parallel=TRUE`:
 
 ```{r}
-
-
+system.time(brute_force_knapsack(x = knapsack_objects[1:16,], W = 3500,parallel = TRUE))
 ```
 
-## Plotting
+the user time it's better compared to the non-parallelized one but the elapsed time increases.
 
-In `lab4ab` package there is also a method which contains two graphs: one representing the residuals vs the fitted values, the second one a scaled version of the first one, the residuals have been standardized by the formula: $$\sqrt{ \frac{|mean(res)-res|}{\sqrt{{Var(res)}}}}$$ .
-The line represents the trend of the observations in the graphs. The smooth has been realized with a local polynomial regression fitting with a span (parameter which controls the degree of smoothing) of 1.5. It looks very close to the one obtained by `plot(lm())`. The methid `$plot()` plots, using *ggplot2*  package that has to be installed before using `lab4ab`. The graphs respect some of the graphical criteria of Linkoping University.
+## Dynamic programming: `knapsack_dynamic(x,W)`
 
-```{r message=FALSE, fig.align="center",fig.height = 5, fig.width = 9}
+The `knapsack_dynamic` is based on the fact that all weights are nonnegative integers and they are all less than $W$. In this approach it's defined a matrix where in each position `m[i,w]` is stored the maximum value that can be attained with weight less than or equal to `w` using items up to `i`. The maximum value is found calculating `m[n,W]`.
+It gives a correct answer to the problem in all the situation but its complexity is $O(Wn)$ less than the `brute_force_knapsack`function. 
 
+To run the algorithm for $n=500$ objects it takes:
 
+```{r}
+system.time(knapsack_dynamic(x = knapsack_objects[1:500,], W = 3500))
 ```
 
-## `$summary()`
+## Greedy Heuristic: `greedy_knapsack(x,W)`
 
-Last method in the package is `summary()`. It's aim is to return a similar printout as printed for `lm()`. The statistics of this output are: 
+The `greedy_knapsack`function doesn't give the exact result for the problem but it reduces the computational complexity for the problem. This approach sorts the items in decreasing order of value per unit of weight $v_i/w_i$ and it proceeds to insert them into the sack until there is not more space. 
+The complexity of this problem is $O(nlogn)$. 
 
-```{r message=FALSE}
+To run the algorithm for $n=1000000$ objects it takes:
 
-
-
+```{r}
+#system.time(greedy_knapsack(x = knapsack_objects[1:1000000,], W = 3500))
 ```
+
+Improving the code with function as `lapply()` or parallelizing helps to get faster results and a better time of computation. The time slows down when big structure are called too many times, as big dataframes, to speed up the code it's always better to evitate saving too many unused data. 
 
 ## Examples
 
+Different functions don't give always the same results:
+
 ```{r}
-
-
-```
-
-```{r, echo=FALSE}
-
+greedy_knapsack(x = knapsack_objects[1:8,], W = 3500)
 ```
 ```{r}
-
-
-
+brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500)
 ```
 ```{r}
+knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500)
+```
 
+Compating the times of the three functions: 
 
-
+```{r}
+system.time(greedy_knapsack(x = knapsack_objects[1:8,], W = 3500))
+```
+```{r}
+system.time(brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500))
+```
+```{r}
+system.time(knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500))
 ```
