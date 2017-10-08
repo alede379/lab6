@@ -48,6 +48,7 @@ brute_force_knapsack<-function(x,W,parallel=FALSE){
   
   if(parallel==TRUE){
     cores <- parallel::detectCores()
+    cores <-2
   
     cl <- parallel::makeCluster(cores, type = "PSOCK")
     

@@ -91,12 +91,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 n &lt;-<span class="st"> </span><span class="dv">2000</span>
 knapsack_objects &lt;-<span class="kw">data.frame</span>(<span class="dt">w=</span><span class="kw">sample</span>(<span class="dv">1</span>:<span class="dv">4000</span>, <span class="dt">size =</span> n, <span class="dt">replace =</span> <span class="ot">TRUE</span>),<span class="dt">v=</span><span class="kw">runif</span>(<span class="dt">n =</span> n, <span class="dv">0</span>, <span class="dv">10000</span>))
 <span class="kw">system.time</span>(<span class="kw">brute_force_knapsack</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">16</span>,], <span class="dt">W =</span> <span class="dv">3500</span>))</code></pre></div>
-<pre><code>##    user  system elapsed 
-##    0.55    0.00    0.54</code></pre>
+<pre><code>## utilisateur     système      écoulé 
+##        0.67        0.00        0.67</code></pre>
 <p>If <code>parallel=TRUE</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">brute_force_knapsack</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">16</span>,], <span class="dt">W =</span> <span class="dv">3500</span>,<span class="dt">parallel =</span> <span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>##    user  system elapsed 
-##    0.05    0.03    1.16</code></pre>
+<pre><code>## utilisateur     système      écoulé 
+##        0.05        0.02        1.24</code></pre>
 <p>the user time it’s better compared to the non-parallelized one but the elapsed time increases.</p>
 </div>
 <div id="dynamic-programming-knapsack_dynamicxw" class="section level2">
@@ -104,16 +104,16 @@ knapsack_objects &lt;-<span class="kw">data.frame</span>(<span class="dt">w=</sp
 <p>The <code>knapsack_dynamic</code> is based on the fact that all weights are nonnegative integers and they are all less than <span class="math inline">\(W\)</span>. In this approach it’s defined a matrix where in each position <code>m[i,w]</code> is stored the maximum value that can be attained with weight less than or equal to <code>w</code> using items up to <code>i</code>. The maximum value is found calculating <code>m[n,W]</code>. It gives a correct answer to the problem in all the situation but its complexity is <span class="math inline">\(O(Wn)\)</span> less than the <code>brute_force_knapsack</code>function.</p>
 <p>To run the algorithm for <span class="math inline">\(n=500\)</span> objects it takes:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_dynamic</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">500</span>,], <span class="dt">W =</span> <span class="dv">3500</span>))</code></pre></div>
-<pre><code>## Warning in .Internal(gc(verbose, reset)): closing unused connection 8 (&lt;-
-## DESKTOP-5B1MD92:11020)</code></pre>
-<pre><code>## Warning in .Internal(gc(verbose, reset)): closing unused connection 7 (&lt;-
-## DESKTOP-5B1MD92:11020)</code></pre>
-<pre><code>## Warning in .Internal(gc(verbose, reset)): closing unused connection 6 (&lt;-
-## DESKTOP-5B1MD92:11020)</code></pre>
-<pre><code>## Warning in .Internal(gc(verbose, reset)): closing unused connection 5 (&lt;-
-## DESKTOP-5B1MD92:11020)</code></pre>
-<pre><code>##    user  system elapsed 
-##    5.50    0.00    5.53</code></pre>
+<pre><code>## Warning in .Internal(gc(verbose, reset)): fermeture de la connexion
+## inutilisée 8 (&lt;-209.34.83.73:443:11471)</code></pre>
+<pre><code>## Warning in .Internal(gc(verbose, reset)): fermeture de la connexion
+## inutilisée 7 (&lt;-209.34.83.73:443:11471)</code></pre>
+<pre><code>## Warning in .Internal(gc(verbose, reset)): fermeture de la connexion
+## inutilisée 6 (&lt;-209.34.83.73:443:11471)</code></pre>
+<pre><code>## Warning in .Internal(gc(verbose, reset)): fermeture de la connexion
+## inutilisée 5 (&lt;-209.34.83.73:443:11471)</code></pre>
+<pre><code>## utilisateur     système      écoulé 
+##        6.89        0.00        6.89</code></pre>
 </div>
 <div id="greedy-heuristic-greedy_knapsackxw" class="section level2">
 <h2>Greedy Heuristic: <code>greedy_knapsack(x,W)</code></h2>
@@ -145,14 +145,14 @@ knapsack_objects &lt;-<span class="kw">data.frame</span>(<span class="dt">w=</sp
 ## [1] 5 8</code></pre>
 <p>Compating the times of the three functions:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">greedy_knapsack</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">8</span>,], <span class="dt">W =</span> <span class="dv">3500</span>))</code></pre></div>
-<pre><code>##    user  system elapsed 
-##    0.02    0.00    0.02</code></pre>
+<pre><code>## utilisateur     système      écoulé 
+##        0.01        0.00        0.01</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">brute_force_knapsack</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">8</span>,], <span class="dt">W =</span> <span class="dv">3500</span>))</code></pre></div>
-<pre><code>##    user  system elapsed 
-##       0       0       0</code></pre>
+<pre><code>## utilisateur     système      écoulé 
+##           0           0           0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_dynamic</span>(<span class="dt">x =</span> knapsack_objects[<span class="dv">1</span>:<span class="dv">8</span>,], <span class="dt">W =</span> <span class="dv">3500</span>))</code></pre></div>
-<pre><code>##    user  system elapsed 
-##    0.01    0.00    0.01</code></pre>
+<pre><code>## utilisateur     système      écoulé 
+##        0.02        0.00        0.02</code></pre>
 </div>
 
 
